@@ -1,0 +1,7 @@
+class C:
+  num = Num()
+c = C()
+c.num = {"key1": "value1", "key2": "value2"}
+d = C()
+d.num = object()
+print(d.num + c.num)

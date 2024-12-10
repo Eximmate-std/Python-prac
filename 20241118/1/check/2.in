@@ -1,0 +1,2 @@
+a = DivStr("HelloWorld!")
+print(''.join(map(str, list(a // 4)+[a % 4])))

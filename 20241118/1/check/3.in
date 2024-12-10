@@ -1,0 +1,6 @@
+a = DivStr("89[0fupgiv;qwfhwfhwtff"*3285737)
+print(a % 67408)
+print(*(a % 10 // 3))
+print(a.lower() % 3)
+print(*(a[1:7] // 3))
+print(a % 5 + DivStr() + a % 6)

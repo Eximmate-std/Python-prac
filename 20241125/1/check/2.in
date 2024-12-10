@@ -1,0 +1,9 @@
+@objcount
+class D:
+    def __init__(self):
+        pass
+
+d1, d2 = D(), D()
+print(D.counter)
+del d1
+print(D.counter)

@@ -1,0 +1,8 @@
+wo = Vowel(a=1, e=None, i=3)
+print(wo.full)
+wo.e = 2
+wo.o = 4
+wo.u = 5
+wo.y = 2790
+print(wo.full)
+print(str(wo))
