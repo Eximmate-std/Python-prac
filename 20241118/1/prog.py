@@ -25,8 +25,6 @@ class DivStr(UserString):
         remainder = length % n
         return self[-remainder:] if remainder else DivStr()
 
-a = DivStr("89[0fupgiv;qwthwthwtt"*1000000)
-print(a % 67408)
 
 from sys import stdin
 exec(stdin.read())

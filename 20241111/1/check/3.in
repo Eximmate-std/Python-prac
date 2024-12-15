@@ -1,0 +1,10 @@
+p, q, r = Omnibus(), Omnibus(), Omnibus()
+del p.random
+p.x = True
+q.y = False
+r.z = int
+print(p.x, p.y, p.z)
+del p.z, q.y, r.v
+print(p.x, p.y, q.y, q.z, r.z, r.w)
+p.z = q.x = r.v = 456
+print(p.x, p.y, p.z, q.y, q.z, r.z, r.w, r.v)

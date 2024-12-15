@@ -1,0 +1,12 @@
+x, y, z = Omnibus(), Omnibus(), Omnibus()
+del x.random
+x.a = x.b = True
+y.b = y.c = False
+z.c = z.d = z.e = lambda: "Hello"
+print(x.a, x.b, y.b, y.c, y.d, z.c, z.d, z.e)
+del x.b, y.d
+print(x.a, x.b, y.b, y.c, z.c, z.d)
+del x.b, z.e
+print(x.a, x.b, y.b, y.c, z.c, z.d)
+x.b = y.a = z.e = x.a = 123
+print(x.a, x.b, y.b, y.c, z.c, z.d, z.e)
