@@ -14,5 +14,6 @@ class Num:
     def __add__(self, other):
         return self.value + other.value
 
+
 import sys
 exec(sys.stdin.read())
