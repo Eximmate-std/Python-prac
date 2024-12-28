@@ -1,7 +1,6 @@
 class Maze:
     def __init__(self, N):
         self.N = N
-        # Инициализация лабиринта с непроходимыми стенами
         self.maze = [['█' for _ in range(N * 2 + 1)] for _ in range(N * 2 + 1)]
         for i in range(1, N * 2, 2):
             for j in range(1, N * 2, 2):
@@ -22,13 +21,11 @@ class Maze:
             self._close_passage(x0, y0, x1, y1)
 
     def _parse_key(self, key):
-        # Парсинг ключа для получения координат
         x0, y0_x1, y1 = key
         y0, x1 = y0_x1.start, y0_x1.stop
         return min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1)
 
     def _is_reachable(self, x0, y0, x1, y1):
-        # Проверка достижимости (поиск в ширину)
         if not (0 <= x0 < self.N and 0 <= y0 < self.N and 0 <= x1 < self.N and 0 <= y1 < self.N):
             return False
 
@@ -43,7 +40,6 @@ class Maze:
             if (cx, cy) == (x1, y1):
                 return True
 
-            # Проверяем все четыре направления
             for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                 nx, ny = cx + dx, cy + dy
                 if 0 <= nx < self.N and 0 <= ny < self.N and (nx, ny) not in visited:
@@ -54,18 +50,18 @@ class Maze:
         return False
 
     def _open_passage(self, x0, y0, x1, y1):
-        if x0 == x1:  # Вертикальное открытие
+        if x0 == x1:
             for j in range(min(y0, y1), max(y0, y1)):
                 self.maze[2 * j + 2][2 * x0 + 1] = '·'
-        elif y0 == y1:  # Горизонтальное открытие
+        elif y0 == y1:
             for i in range(min(x0, x1), max(x0, x1)):
                 self.maze[2 * y0 + 1][2 * i + 2] = '·'
 
     def _close_passage(self, x0, y0, x1, y1):
-        if x0 == x1:  # Вертикальное открытие
+        if x0 == x1:
             for j in range(min(y0, y1), max(y0, y1)):
                 self.maze[2 * j + 2][2 * x0 + 1] = '█'
-        elif y0 == y1:  # Горизонтальное открытие
+        elif y0 == y1:
             for i in range(min(x0, x1), max(x0, x1)):
                 self.maze[2 * y0 + 1][2 * i + 2] = '█'
 
