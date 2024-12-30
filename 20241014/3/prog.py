@@ -23,5 +23,5 @@ max_value = max(gas, liquid)
 gas_diagram = round(20 * gas / max_value)
 liquid_diagram = round(20 * liquid / max_value)
 
-print('.' * gas_diagram + ' ' * (20 - gas_diagram) + ' ' * (max(0, len(str(liquid)) - len(str(gas))) + 1) + str(gas) + '/' + str(gas + liquid))
-print('~' * liquid_diagram + ' ' * (20 - liquid_diagram) + ' ' * (max(0, len(str(gas)) - len(str(liquid))) + 1) + str(liquid) + '/' + str(gas + liquid))
+print('.' * gas_diagram + ' ' * (20 - gas_diagram) + ' ' * (max(0, len(str(liquid)) - len(str(gas))) + 1) + str(gas*width) + '/' + str((gas + liquid)*width))
+print('~' * liquid_diagram + ' ' * (20 - liquid_diagram) + ' ' * (max(0, len(str(gas)) - len(str(liquid))) + 1) + str(liquid*width) + '/' + str((gas + liquid)*width))
