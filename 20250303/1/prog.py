@@ -1,9 +1,13 @@
 import shlex
 import sys
 import cowsay
+from io import StringIO
+
 
 player_position = (0, 0)
 game_map = [ (10 * [None]) for _ in range(10) ]
+custom_monsters = dict()
+
 
 class Entity:
     def __init__(self, name, hello_word, hp):
@@ -22,8 +26,8 @@ def move(direction):
     return player_position
 
 
-def add_monster(name, hello_word, hp, location):
-    if name not in cowsay.list_cows():
+def add_monster(name, hello_word, hp, location, ):
+    if (name not in cowsay.list_cows()) and (name not in custom_monsters):
         print('Cannot add unknown monster')
         return
 
@@ -38,10 +42,36 @@ def add_monster(name, hello_word, hp, location):
 
 def encounter():
     entity = game_map[player_position[1]][player_position[0]]
-    print(cowsay.cowsay(entity.hello_word, cow = entity.name))
+
+    if entity.name in cowsay.list_cows():
+        print(cowsay.cowsay(entity.hello_word, cow = entity.name))
+    else:
+        print(cowsay.cowsay(entity.hello_word,
+                            cowfile=custom_monsters[entity.name]))
+
+
+def add_custom_monsters():
+    custom_monsters["jgsbat"] = cowsay.read_dot_cow(StringIO(r"""
+    $the_cow = <<EOC;
+             $thoughts
+              $thoughts
+        ,_                    _,
+        ) '-._  ,_    _,  _.-' (
+        )  _.-'.|\\\\--//|.'-._  (
+         )'   .'\\/o\\/o\\/'.   `(
+          ) .' . \\====/ . '. (
+           )  / <<    >> \\  (
+            '-._/``  ``\\_.-'
+      jgs     __\\\\'--'//__
+             (((""`  `"")))
+    EOC
+    """))
+
 
 
 def main():
+    add_custom_monsters()
+
     print('<<< Welcome to Python-MUD 0.1 >>>')
     for user_input in sys.stdin:
         if not user_input.strip:
