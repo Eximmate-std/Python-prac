@@ -1,3 +1,4 @@
+import shlex
 import sys
 import cowsay
 
@@ -27,7 +28,7 @@ def add_monster(name, hello_word, hp, location):
         return
 
     x, y = location
-    print(f'Added monster {name} to ({x}, {y}) saying {hello_word}')
+    print(f'Added monster {name} to ({x}, {y}) saying {hello_word} with {hp} hp')
 
     if game_map[x][y]:
         print('Replaced the old monster')
@@ -45,11 +46,11 @@ def main():
         if not user_input.strip:
             continue
 
-        args = user_input.strip().split()
-        command = args[0]
-
         try:
-             match command:
+            args = shlex.split(user_input.strip())
+            command = args[0]
+
+            match command:
                 case "up":
                     move((0, -1))
                 case "down":
@@ -59,11 +60,38 @@ def main():
                 case "left":
                     move((-1, 0))
                 case "addmon":
-                    if len(args) != 5:
+                    if len(args) != 9:
                         raise ValueError
-                    add_monster(args[1], args[4], 100, (int(args[2]), int(args[3])))
+
+                    monster_name = args[1]
+                    params = args[2:]
+
+                    hello_word = None
+                    hp = None
+                    location = None
+                    i = 0
+
+                    while i < len(params):
+                        if params[i] == 'hello':
+                            hello_word = params[i + 1]
+                            i += 2
+                        elif params[i] == 'hp':
+                            hp = int(params[i + 1])
+                            i += 2
+                        elif params[i] == 'coords':
+                            location = (int(params[i + 1]), int(params[i + 2]))
+                            i += 3
+                        else:
+                            raise ValueError("Unknown parameter")
+
+                    if None in (hello_word, hp, location):
+                        raise ValueError("Missing required parameters")
+
+                    add_monster(monster_name, hello_word, hp, location)
+
                 case _:
                     print("Invalid command")
+
         except Exception as e:
             print('Invalid arguments')
 
