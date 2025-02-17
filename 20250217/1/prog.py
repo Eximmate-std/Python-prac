@@ -16,12 +16,12 @@ def list_branches(repo_path):
 
 def show_commit(repo_path, branch):
     git_dir = Path(repo_path) / ".git"
-    ref_path = git_dir / "refs/heads" / branch
+    br_path = git_dir / "refs/heads" / branch
 
-    if not ref_path.exists():
+    if not br_path.exists():
         raise ValueError(f"Branch {branch} not found")
 
-    with open(ref_path, "r") as f:
+    with open(br_path, "r") as f:
         commit_sha = f.read().strip()
 
     obj_path = git_dir / "objects" / commit_sha[:2] / commit_sha[2:]
@@ -34,9 +34,10 @@ def show_commit(repo_path, branch):
 
 def show_tree(repo_path, branch):
     commit_body = show_commit(repo_path, branch)
-    tree_line = (next(line for line in commit_body.split('\n') if line.startswith('tree'))).split()[1]
-    obj_path = Path(repo_path) / ".git/objects" / tree_line[:2] / tree_line[2:]
+    tree_line = next(line for line in commit_body.split('\n') if line.startswith('tree'))
+    tree_sha = tree_line.split()[1]
 
+    obj_path = Path(repo_path) / ".git/objects" / tree_sha[:2] / tree_sha[2:]
     with open(obj_path, "rb") as f:
         raw = zlib.decompress(f.read())
 
@@ -45,16 +46,32 @@ def show_tree(repo_path, branch):
     tree_entries = []
     while body:
         mode_name, _, rest = body.partition(b'\x00')
-        sha = rest[:20].hex()
+        ob_hash = rest[:20].hex()
         body = rest[20:]
         mode, name = mode_name.split(b' ', 1)
 
-        if mode.decode() == '40000':
-            mode = "tree"
-        else: mode = "blob"
+        entry_type = "tree" if mode == b'40000' else "blob"
+        tree_entries.append(f"{entry_type} {ob_hash}    {name.decode()}")
 
-        tree_entries.append(f"{mode} {sha}    {name.decode()}")
     return "\n".join(tree_entries)
+
+
+def show_history(repo_path, branch):
+    br_path = Path(repo_path) / ".git" / "refs/heads" / branch
+    current_hash = br_path.read_text().strip()
+
+    while current_hash:
+        obj_path = Path(repo_path) / ".git/objects" / current_hash[:2] / current_hash[2:]
+        with open(obj_path, "rb") as f:
+            commit_body = zlib.decompress(f.read()).split(b'\x00')[1].decode()
+
+        tree_line = (next(line for line in commit_body.split('\n') if line.startswith('tree'))).split()[1]
+
+        print(f"TREE for commit {current_hash}")
+        print(show_tree(repo_path, branch).replace(tree_line, current_hash))  # Костыль для совместимости
+
+        parent_lines = [line for line in commit_body.split('\n') if line.startswith('parent')]
+        current_hash = parent_lines[0].split()[1] if parent_lines else None
 
 
 if __name__ == "__main__":
@@ -63,8 +80,14 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         list_branches(repo_path)
     elif len(sys.argv) == 3:
-        print(show_commit(sys.argv[1], sys.argv[2]))
-        print(show_tree(sys.argv[1], sys.argv[2]))
+        branch = sys.argv[2]
+        try:
+            print(show_commit(repo_path, branch).strip())
+            print(show_tree(repo_path, branch))
+            show_history(repo_path, branch)
+        except Exception as e:
+            print(f"Error: {e}")
+            sys.exit(1)
     else:
-        print("Usage: prog.py REPO_PATH [BRANCH]")
+        print("Expected: prog.py REPO_PATH [BRANCH]")
         sys.exit(1)
