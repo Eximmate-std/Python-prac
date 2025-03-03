@@ -40,6 +40,7 @@ def encounter():
 
 
 def main():
+    print('<<< Welcome to Python-MUD 0.1 >>>')
     for user_input in sys.stdin:
         if not user_input.strip:
             continue
