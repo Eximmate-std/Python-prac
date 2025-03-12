@@ -41,6 +41,43 @@ def add_monster(name, hello_word, hp, location):
     game_map[y][x] = Entity(name, hello_word, hp)
 
 
+def parse_addmon_args(args):
+    try:
+        args = shlex.split(args.strip())
+
+        if len(args) != 8:
+            raise ValueError
+
+        monster_name = args[0]
+        params = args[1:]
+
+        hello_word = None
+        hp = None
+        location = None
+        i = 0
+
+        while i < len(params):
+            if params[i] == 'hello':
+                hello_word = params[i + 1]
+                i += 2
+            elif params[i] == 'hp':
+                hp = int(params[i + 1])
+                i += 2
+            elif params[i] == 'coords':
+                location = (int(params[i + 1]), int(params[i + 2]))
+                i += 3
+            else:
+                raise ValueError
+
+        if None in (hello_word, hp, location):
+            raise ValueError
+
+    except Exception as e:
+        print('Invalid arguments')
+
+    return monster_name, hello_word, hp, location
+
+
 def encounter():
     entity = game_map[player_position[1]][player_position[0]]
 
@@ -74,56 +111,29 @@ class MUD(cmd.Cmd):
     prompt = 'MUD>> '
 
     def do_up(self, args):
-        "up"
         move((0, -1))
 
     def do_down(self, args):
-        "down"
         move((0, 1))
 
     def do_left(self, args):
-        "left"
         move((-1, 0))
 
     def do_right(self, args):
-        "right"
         move((1, 0))
 
+
     def do_addmon(self, arg):
-        try:
-            args = shlex.split(arg.strip())
+        monster_name, hello_word, hp, location = parse_addmon_args(arg)
+        add_monster(monster_name, hello_word, hp, location)
 
-            if len(args) != 8:
-                raise ValueError
 
-            monster_name = args[0]
-            params = args[1:]
-
-            hello_word = None
-            hp = None
-            location = None
-            i = 0
-
-            while i < len(params):
-                if params[i] == 'hello':
-                    hello_word = params[i + 1]
-                    i += 2
-                elif params[i] == 'hp':
-                    hp = int(params[i + 1])
-                    i += 2
-                elif params[i] == 'coords':
-                    location = (int(params[i + 1]), int(params[i + 2]))
-                    i += 3
-                else:
-                    raise ValueError("Unknown parameter")
-
-            if None in (hello_word, hp, location):
-                raise ValueError("Missing required parameters")
-
-            add_monster(monster_name, hello_word, hp, location)
-
-        except Exception as e:
-            print('Invalid arguments')
+    def complete_addmon(self, line, text):
+        monsters = cowsay.list_cows() + list(custom_monsters.keys())
+        if len(line.split()) < 3:
+            return [name for name in monsters if name.startswith(text)]
+        else:
+            return [name for name in ['coords', 'hello', 'hp'] if name.startswith(text)]
 
 
 def main():
