@@ -166,7 +166,6 @@ class MUD(cmd.Cmd):
         monster_name, hello_word, hp, location = parse_addmon_args(arg)
         add_monster(monster_name, hello_word, hp, location)
 
-
     def complete_addmon(self, line, text):
         monsters = cowsay.list_cows() + list(custom_monsters.keys())
         if len(line.split()) < 3:
@@ -177,6 +176,15 @@ class MUD(cmd.Cmd):
 
     def do_attack(self, arg):
         attack(parse_attack(arg))
+
+    def complete_attack(self, line, text):
+        monsters = cowsay.list_cows() + list(custom_monsters.keys())
+        if len(line.split(' ')) == 2:
+            return [name for name in monsters if name.startswith(text)]
+        elif len(line.split(' ')) == 3:
+            return ['with']
+        else:
+            return [name for name in list(weapon_damage.keys()) if name.startswith(text)]
 
 
 def main():
