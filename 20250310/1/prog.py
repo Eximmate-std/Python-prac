@@ -1,5 +1,4 @@
 import shlex
-import sys
 import cowsay
 from io import StringIO
 import cmd
@@ -106,6 +105,25 @@ def add_custom_monsters():
     """))
 
 
+def attack():
+    x, y = player_position
+    entity = game_map[y][x]
+
+    if not entity:
+        print("No monster here")
+        return
+
+    damage = min(10, entity.hp)
+    entity.hp -= damage
+    print(f"Attacked {entity.name}, damage {damage} hp")
+
+    if entity.hp <= 0:
+        print(f"{entity.name} died")
+        game_map[y][x] = None
+    else:
+        print(f"{entity.name} now has {entity.hp}")
+
+
 class MUD(cmd.Cmd):
     intro = '<<< Welcome to Python-MUD 0.1 >>>'
     prompt = 'MUD>> '
@@ -134,6 +152,13 @@ class MUD(cmd.Cmd):
             return [name for name in monsters if name.startswith(text)]
         else:
             return [name for name in ['coords', 'hello', 'hp'] if name.startswith(text)]
+
+
+    def do_attack(self, arg):
+        if arg.strip():
+            print("Error: 'attack' command doesn't take arguments")
+            return
+        attack()
 
 
 def main():
