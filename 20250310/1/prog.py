@@ -105,12 +105,12 @@ def add_custom_monsters():
     """))
 
 
-def attack():
+def attack(monster_name):
     x, y = player_position
     entity = game_map[y][x]
 
-    if not entity:
-        print("No monster here")
+    if not entity or (entity.name != monster_name[0]):
+        print(f"No {monster_name} here")
         return
 
     damage = min(10, entity.hp)
@@ -155,10 +155,16 @@ class MUD(cmd.Cmd):
 
 
     def do_attack(self, arg):
-        if arg.strip():
-            print("Error: 'attack' command doesn't take arguments")
+        arg = shlex.split(arg)
+        if len(arg) != 1:
+            print("Invalid arguments!")
             return
-        attack()
+        attack(arg)
+
+
+    def complete_attack(self, text):
+        monsters = cowsay.list_cows() + list(custom_monsters.keys())
+        return [m for m in monsters if m.startswith(text)]
 
 
 def main():
