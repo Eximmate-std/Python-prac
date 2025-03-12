@@ -3,11 +3,16 @@ import cowsay
 from io import StringIO
 import cmd
 
+from werkzeug.datastructures import Range
 
 player_position = (0, 0)
 game_map = [ (10 * [None]) for _ in range(10) ]
 custom_monsters = dict()
-
+weapon_damage = {
+    'sword': 10,
+    'spear': 15,
+    'axe': 20
+}
 
 class Entity:
     def __init__(self, name, hello_word, hp):
@@ -105,7 +110,7 @@ def add_custom_monsters():
     """))
 
 
-def attack():
+def attack(weapon='sword'):
     x, y = player_position
     entity = game_map[y][x]
 
@@ -113,15 +118,31 @@ def attack():
         print("No monster here")
         return
 
-    damage = min(10, entity.hp)
+    damage = min(weapon_damage[weapon], entity.hp)
     entity.hp -= damage
-    print(f"Attacked {entity.name}, damage {damage} hp")
+    print(f"Attacked {entity.name} with {weapon}, damage {damage} hp")
 
     if entity.hp <= 0:
         print(f"{entity.name} died")
         game_map[y][x] = None
     else:
         print(f"{entity.name} now has {entity.hp}")
+
+
+def parse_attack(args):
+    args = shlex.split(args)
+    weapon = 'sword'
+
+    if len(args) == 0:
+        pass
+    elif len(args) == 2 and args[0] == 'with':
+        if args[1] in weapon_damage:
+            weapon = args[1]
+        else:
+            raise ValueError("Unknown weapon")
+    else:
+        raise ValueError("Invalid command syntax. Use: attack [with <weapon>]")
+    return weapon
 
 
 class MUD(cmd.Cmd):
@@ -155,10 +176,7 @@ class MUD(cmd.Cmd):
 
 
     def do_attack(self, arg):
-        if arg.strip():
-            print("Error: 'attack' command doesn't take arguments")
-            return
-        attack()
+        attack(parse_attack(arg))
 
 
 def main():
