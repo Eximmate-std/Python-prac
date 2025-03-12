@@ -3,7 +3,6 @@ import cowsay
 from io import StringIO
 import cmd
 
-from werkzeug.datastructures import Range
 
 player_position = (0, 0)
 game_map = [ (10 * [None]) for _ in range(10) ]
@@ -110,12 +109,12 @@ def add_custom_monsters():
     """))
 
 
-def attack(weapon='sword'):
+def attack(monster_name, weapon='sword'):
     x, y = player_position
     entity = game_map[y][x]
 
-    if not entity:
-        print("No monster here")
+    if not entity or (entity.name != monster_name[0]):
+        print(f"No {monster_name} here")
         return
 
     damage = min(weapon_damage[weapon], entity.hp)
