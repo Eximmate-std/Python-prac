@@ -1,0 +1,267 @@
+From 12dd2e7873f27895b30c86835dd52b4448ad6b77 Mon Sep 17 00:00:00 2001
+From: Eximmate-std <inysh.av05@gmail.com>
+Date: Thu, 20 Mar 2025 20:41:52 +0300
+Subject: [PATCH 1/2] In HW05/1 added total_bundle client
+
+---
+ 20250317/1/prog.py | 196 ++++++++++++++++++++++-----------------------
+ 1 file changed, 95 insertions(+), 101 deletions(-)
+
+diff --git a/20250317/1/prog.py b/20250317/1/prog.py
+index afa450e..c72fd58 100644
+--- a/20250317/1/prog.py
++++ b/20250317/1/prog.py
+@@ -1,47 +1,40 @@
+ import shlex
++import asyncio
+ import cowsay
+ from io import StringIO
+ import cmd
+ 
+ 
+-player_position = (0, 0)
+-game_map = [ (10 * [None]) for _ in range(10) ]
+-custom_monsters = dict()
++custom_monsters = {
++    "jgsbat" : cowsay.read_dot_cow(StringIO(r"""
++$the_cow = <<EOC;
++         $thoughts
++          $thoughts
++    ,_                    _,
++    ) '-._  ,_    _,  _.-' (
++    )  _.-'.|\\\\--//|.'-._  (
++     )'   .'\\/o\\/o\\/'.   `(
++      ) .' . \\====/ . '. (
++       )  / <<    >> \\  (
++        '-._/``  ``\\_.-'
++  jgs     __\\\\'--'//__
++         (((""`  `"")))
++EOC
++"""))
++
++}
+ weapon_damage = {
+     'sword': 10,
+     'spear': 15,
+     'axe': 20
+ }
+ 
+-class Entity:
+-    def __init__(self, name, hello_word, hp):
+-        self.hello_word = hello_word
+-        self.name = name
+-        self.hp = hp
+-
+-
+-def move(direction):
+-    global player_position
+-    player_position = ((player_position[0] + direction[0] + 10) % 10,
+-                       (player_position[1] + direction[1] + 10) % 10)
+-    print(f'Moved to ({player_position[0]}, {player_position[1]})')
+-    if game_map[player_position[1]][player_position[0]]:
+-        encounter()
+-    return player_position
+-
+-
+-def add_monster(name, hello_word, hp, location):
+-    if (name not in cowsay.list_cows()) and (name not in custom_monsters):
+-        print('Cannot add unknown monster')
+-        return
+-
+-    x, y = location
+-    print(f'Added monster {name} to ({x}, {y}) saying {hello_word} with {hp} hp')
+ 
+-    if game_map[x][y]:
+-        print('Replaced the old monster')
+-
+-    game_map[y][x] = Entity(name, hello_word, hp)
++def encounter(monster_name, hello):
++    if monster_name in cowsay.list_cows():
++        print(cowsay.cowsay(hello, cow = monster_name))
++    else:
++        print(cowsay.cowsay(hello, cowfile=custom_monsters[monster_name]))
+ 
+ 
+ def parse_addmon_args(args):
+@@ -81,89 +74,80 @@ def parse_addmon_args(args):
+     return monster_name, hello_word, hp, location
+ 
+ 
+-def encounter():
+-    entity = game_map[player_position[1]][player_position[0]]
+-
+-    if entity.name in cowsay.list_cows():
+-        print(cowsay.cowsay(entity.hello_word, cow = entity.name))
+-    else:
+-        print(cowsay.cowsay(entity.hello_word,
+-                             cowfile=custom_monsters[entity.name]))
+-
+-
+-def add_custom_monsters():
+-    custom_monsters["jgsbat"] = cowsay.read_dot_cow(StringIO(r"""
+-    $the_cow = <<EOC;
+-             $thoughts
+-              $thoughts
+-        ,_                    _,
+-        ) '-._  ,_    _,  _.-' (
+-        )  _.-'.|\\\\--//|.'-._  (
+-         )'   .'\\/o\\/o\\/'.   `(
+-          ) .' . \\====/ . '. (
+-           )  / <<    >> \\  (
+-            '-._/``  ``\\_.-'
+-      jgs     __\\\\'--'//__
+-             (((""`  `"")))
+-    EOC
+-    """))
+-
+-
+-def attack(monster_name, weapon='sword'):
+-    x, y = player_position
+-    entity = game_map[y][x]
+-
+-    if not entity or (entity.name != monster_name[0]):
+-        print(f"No {monster_name} here")
+-        return
+-
+-    damage = min(weapon_damage[weapon], entity.hp)
+-    entity.hp -= damage
+-    print(f"Attacked {entity.name} with {weapon}, damage {damage} hp")
+-
+-    if entity.hp <= 0:
+-        print(f"{entity.name} died")
+-        game_map[y][x] = None
+-    else:
+-        print(f"{entity.name} now has {entity.hp}")
+-
+-
+ def parse_attack(args):
+     args = shlex.split(args)
+-    weapon = 'sword'
++    if not (monster_name := args[0]):
++        print("Invalid arguments")
++        return
+ 
+-    if len(args) == 0:
+-        pass
+-    elif len(args) == 2 and args[0] == 'with':
+-        if args[1] in weapon_damage:
+-            weapon = args[1]
+-        else:
+-            raise ValueError("Unknown weapon")
+-    else:
+-        raise ValueError("Invalid command syntax. Use: attack [with <weapon>]")
+-    return weapon
++    if len(args) == 1:
++        damage = weapon_damage['sword']
++    elif args[1] == 'with':
++        if args[2] not in weapon_damage:
++            print("Unknown weapon!")
++            return
++        damage = weapon_damage[args[2]]
++
++    return monster_name, damage
+ 
+ 
+ class MUD(cmd.Cmd):
+     intro = '<<< Welcome to Python-MUD 0.1 >>>'
+     prompt = 'MUD>> '
+ 
+-    def do_up(self, args):
+-        move((0, -1))
++    def __init__(self):
++        super().__init__()
++        self.loop = asyncio.get_event_loop()
++        self.receiver = None
++        self.sender = None
++
++    def preloop(self):
++        self.loop.run_until_complete(self.init_users())
++
++    async def init_users(self):
++        self.receiver, self.sender = await asyncio.open_connection('localhost', 25565)
+ 
+-    def do_down(self, args):
+-        move((0, 1))
++    async def send(self, request):
++        self.sender.write((request + '\n').encode())
++        await self.sender.drain()
++        reply = await self.receiver.readline()
++        return reply.decode().strip()
+ 
+-    def do_left(self, args):
+-        move((-1, 0))
+ 
+-    def do_right(self, args):
+-        move((1, 0))
++    def do_up(self):
++        self.loop.run_until_complete(self._move_player(0, -1))
++
++    def do_down(self):
++        self.loop.run_until_complete(self._move_player(0, 1))
++
++    def do_left(self):
++        self.loop.run_until_complete(self._move_player(-1, 0))
++
++    def do_right(self):
++        self.loop.run_until_complete(self._move_player(1, 0))
++
++    async def _move(self, dx, dy):
++        server_response = await self.send(f"move {dx} {dy}")
++        x, y, *monster_data = shlex.split(server_response)
++        print(f'Moved to ({x}, {y})')
++        if monster_data:
++            monster_name, *hello = monster_data
++            hello = ' '.join(hello)
++            encounter(monster_name, hello)
+ 
+ 
+     def do_addmon(self, arg):
+         monster_name, hello_word, hp, location = parse_addmon_args(arg)
+-        add_monster(monster_name, hello_word, hp, location)
++        if (monster_name not in cowsay.list_cows()) and (monster_name not in custom_monsters):
++            print('Cannot add unknown monster')
++            return
++        self.loop.run_until_complete(self._add_monster(monster_name, hello_word, hp, location))
++
++    async def _add_monster(self, monster_name, hello, hp, location):
++        server_response = await self.send(f"addmon {monster_name} {location[0]} {location[1]} {hp} {hello}")
++        print(f'Added monster {monster_name} to ({location[0]}, {location[1]}) saying {hello}')
++        if server_response == 'replaced':
++            print('Replaced the old monster')
+ 
+     def complete_addmon(self, line, text):
+         monsters = cowsay.list_cows() + list(custom_monsters.keys())
+@@ -174,7 +158,19 @@ class MUD(cmd.Cmd):
+ 
+ 
+     def do_attack(self, arg):
+-        attack(parse_attack(arg))
++        monster_name, damage = parse_attack(arg)
++        self.loop.run_until_complete(self._attack(monster_name, damage))
++
++    async def _attack(self, monster_name, damage):
++        server_response = await self.send(f"attack {monster_name} {damage}")
++        if server_response:
++            damage, hp = server_response.split(' ', 1)
++            print(f'Attacked {monster_name},  damage {damage} hp')
++            if hp == '0':
++                print(f'{monster_name} died')
++            else:
++                print(f'{monster_name} now has {hp}')
++        else: print(f'No {monster_name} here')
+ 
+     def complete_attack(self, line, text):
+         monsters = cowsay.list_cows() + list(custom_monsters.keys())
+@@ -187,9 +183,7 @@ class MUD(cmd.Cmd):
+ 
+ 
+ def main():
+-    add_custom_monsters()
+     MUD().cmdloop()
+ 
+-
+ if __name__ == "__main__":
+     main()
+-- 
+2.49.0.windows.1
+
