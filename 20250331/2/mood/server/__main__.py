@@ -3,11 +3,10 @@ from io import StringIO
 import shlex
 import cowsay
 
-
 players = {}
-game_map = [ (10 * [None]) for _ in range(10) ]
+game_map = [(10 * [None]) for _ in range(10)]
 custom_monsters = {
-    "jgsbat" : cowsay.read_dot_cow(StringIO(r"""
+    "jgsbat": cowsay.read_dot_cow(StringIO(r"""
 $the_cow = <<EOC;
          $thoughts
           $thoughts
@@ -41,7 +40,7 @@ class Player:
 
 def encounter(monster_name, hello):
     if monster_name in cowsay.list_cows():
-        return cowsay.cowsay(hello, cow = monster_name)
+        return cowsay.cowsay(hello, cow=monster_name)
     else:
         return cowsay.cowsay(hello, cowfile=custom_monsters[monster_name])
 
@@ -57,7 +56,7 @@ def move(player_name, dx, dy):
 
 def add_monster(player_name, monster_name, x, y, hp, hello_word):
     broadcast = (f'{player_name} added monster' +
-                       f'{monster_name} saying {hello_word} with {hp} hp')
+                 f'{monster_name} saying {hello_word} with {hp} hp')
     response = (f'Added monster {monster_name} to' +
                 f' ({x}, {y}) saying {hello_word} with {hp} hp')
     if game_map[x][y]:
@@ -186,5 +185,6 @@ async def main():
     server = await asyncio.start_server(proccess, 'localhost', 25565)
     async with server:
         await server.serve_forever()
+
 
 asyncio.run(main())
