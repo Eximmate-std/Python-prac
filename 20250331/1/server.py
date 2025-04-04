@@ -130,6 +130,7 @@ async def proccess(receiver, sender):
 
                     args = shlex.split(args)
                     broadcast = ""
+                    response = ""
 
                     match args[0]:
                         case 'move':
@@ -148,6 +149,9 @@ async def proccess(receiver, sender):
                             name = args[1]
                             damage = int(args[2])
                             response, broadcast = attack(username, name, damage)
+
+                        case 'sayall':
+                            broadcast = f'{username}: {' '.join(args[1:])}'
 
                         case _:
                             response = 'Invalid command'

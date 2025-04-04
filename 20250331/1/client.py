@@ -159,6 +159,14 @@ class MUD(cmd.Cmd):
         else:
             return [name for name in list(weapon_damage.keys()) if name.startswith(text)]
 
+    def do_sayall(self, arg):
+        if ' ' in arg:
+            if arg.startswith('"') and arg.endswith('"'):
+                self.send(f"sayall {arg.strip('" ')}")
+            else: print("Invalid Input!")
+        else:
+            self.send(f'sayall {arg}')
+
 
 async def local_srv(mud):
     try:
