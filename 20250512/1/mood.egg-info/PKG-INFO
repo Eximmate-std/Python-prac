@@ -1,0 +1,8 @@
+Metadata-Version: 2.4
+Name: mood
+Version: 0.1.0
+Summary: Multiplayer text-based dungeon game with monsters and localization
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: python-cowsay
+Requires-Dist: docutils

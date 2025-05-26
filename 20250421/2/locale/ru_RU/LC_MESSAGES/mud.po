@@ -1,0 +1,120 @@
+# Russian (Russia) translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru_RU\n"
+"Plural-Forms: nplurals=2; plural=(n%10==1 && n%100!=11 ? 0 : 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: mood/server/__main__.py:260
+#, python-brace-format
+msgid "{n} очко здоровья"
+msgid_plural "{n} очков здоровья"
+msgstr[0] "{n} очко здоровья"
+msgstr[1] "{n} очков здоровья"
+
+#: mood/server/__main__.py:267
+#, python-brace-format
+msgid "{n} урон"
+msgid_plural "{n} урона"
+msgstr[0] "{n} урон"
+msgstr[1] "{n} урона"
+
+#: mood/server/__main__.py:299
+#, python-brace-format
+msgid "{username} has joined the game"
+msgstr "{username} присоединился к игре"
+
+#: mood/server/__main__.py:315
+msgid "Invalid arguments"
+msgstr "Неверные аргументы"
+
+#: mood/server/__main__.py:320
+#, python-brace-format
+msgid "Set up locale: {args}"
+msgstr "Установлена локаль: {args}"
+
+#: mood/server/__main__.py:322
+msgid "Unsupported locale"
+msgstr "Неподдерживаемая локаль"
+
+#: mood/server/__main__.py:328
+#, python-brace-format
+msgid "Moving monsters: {args}"
+msgstr "Перемещение монстров: {args}"
+
+#: mood/server/__main__.py:333
+msgid "Cannot add unknown monster"
+msgstr "Нельзя добавить неизвестного монстра"
+
+#: mood/server/__main__.py:335
+msgid "Cannot add monster to player's position"
+msgstr "Нельзя добавить монстра на позицию игрока"
+
+#: mood/server/__main__.py:345
+#, python-brace-format
+msgid "{username} added monster {name} to ({x}, {y}) with {hp}"
+msgstr "{username} добавил монстра {name} на ({x}, {y}) с {hp}"
+
+#: mood/server/__main__.py:347
+msgid "Replaced the old monster"
+msgstr "Заменен старый монстр"
+
+#: mood/server/__main__.py:353
+msgid "Unknown weapon"
+msgstr "Неизвестное оружие"
+
+#: mood/server/__main__.py:355
+#, python-brace-format
+msgid "No such monster {name}"
+msgstr "Нет такого монстра {name}"
+
+#: mood/server/__main__.py:358
+#, python-brace-format
+msgid "No {name} here"
+msgstr "Здесь нет {name}"
+
+#: mood/server/__main__.py:375
+#, python-brace-format
+msgid "Moved to ({new_position})\n{encounter_message}"
+msgstr "Переместился в ({new_position})\n{encounter_message}"
+
+#: mood/server/__main__.py:377
+#, python-brace-format
+msgid "Moved to ({new_position})"
+msgstr "Переместился в ({new_position})"
+
+#: mood/server/__main__.py:385
+#, python-brace-format
+msgid "{username}: {message}"
+msgstr "{username}: {message}"
+
+#: mood/server/__main__.py:387
+msgid "Unknown command"
+msgstr "Неизвестная команда"
+
+#: mood/server/__main__.py:389
+#, python-brace-format
+msgid "{username} has left the game"
+msgstr "{username} покинул игру"
+
+#: mood/server/__main__.py:393
+#, python-brace-format
+msgid "{username} attacked {name} with {weapon} for {damage}, {name} died"
+msgstr "{username} атаковал {name} с помощью {weapon} и нанёс {damage}, {name} умер"
+
+#: mood/server/__main__.py:397
+#, python-brace-format
+msgid "{username} attacked {name} with {weapon} for {damage}, {name} has {hp} left"
+msgstr "{username} атаковал {name} с помощью {weapon} и нанёс {damage}, у {name} осталось {hp}"
+

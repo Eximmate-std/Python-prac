@@ -1,0 +1,27 @@
+[project]
+name = "mood"
+description = "Multiplayer text-based dungeon game with monsters and localization"
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "python-cowsay",
+    "docutils",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+mood = "mood"
+
+[tool.setuptools.package-data]
+mood = [
+    "locale/ru_RU.UTF-8/LC_MESSAGES/mud.mo",
+    "jgsbat.cow",
+]
+
+[project.scripts]
+mud-client = "mood.client.__main__:main"
+mud-server = "mood.server.__main__:serve"

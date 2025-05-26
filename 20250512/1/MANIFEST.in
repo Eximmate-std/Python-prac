@@ -1,0 +1,8 @@
+graft mood
+graft docs/build/html
+include jgsbat.cow
+include Pipfile
+include Pipfile.lock
+include dodo.py
+include README.md
+

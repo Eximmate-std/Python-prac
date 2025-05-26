@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html lang="python" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>MOOD &#8212; MOOD 0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=718ab326"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Server Main Module" href="server_main.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="mood">
+<h1>MOOD<a class="headerlink" href="#mood" title="Link to this heading">¶</a></h1>
+<section id="id1">
+<h2>Задача<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>напишите программу, реализующую простейший multi-user dungeon (по ходу практикума MUD будет усложняться)
+имеется поле 10х10 клеток; рисовать поле и его наполнение - не нужно</p>
+<ul class="simple">
+<li><p>по каждой оси нумерация с 0 по 9</p></li>
+<li><p>первая координата задает координату по горизонтали, вторая - по вертикали</p></li>
+<li><p>клетка (0, 0) находится в левом верхнем углу поля (важно для навигации)</p></li>
+</ul>
+<p>в каждой клетке может либо быть пусто, либо находиться один монстр
+по полю ходит игрок; когда он попадает на клетку с монстром, случается &quot;происшествие&quot; (encounter)
+в начале игры игрок появляется в клетке (0, 0)
+настройка поля и игровой процесс организованы при помощи командной строки
+должен поддерживаться не только интерактивный режим (с консольным вводом), но и режим с получением команд из текстового файла (перенаправление ввода при помощи &quot;&lt;&quot;) - это нужно для автотестирования</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">См. техническую документацию:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="server_main.html">Server Main Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="server_main.html#server.__main__.MUD"><code class="docutils literal notranslate"><span class="pre">MUD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server_main.html#server.__main__.broadcast_message"><code class="docutils literal notranslate"><span class="pre">broadcast_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server_main.html#server.__main__.handle_client"><code class="docutils literal notranslate"><span class="pre">handle_client()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server_main.html#server.__main__.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server_main.html#server.__main__.move_random_monster"><code class="docutils literal notranslate"><span class="pre">move_random_monster()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server_main.html#server.__main__.send_messages"><code class="docutils literal notranslate"><span class="pre">send_messages()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">MOOD</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">См. техническую документацию:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="server_main.html">Server Main Module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="server_main.html" title="next chapter">Server Main Module</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Eredgepova Meliya.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
